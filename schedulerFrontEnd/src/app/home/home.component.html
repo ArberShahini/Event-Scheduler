@@ -1,0 +1,73 @@
+<div class="toolbar">
+  <div class="toolbar-flex">
+    <img [src]="'/assets/event-schedule.png'" class="image-icon">
+    <h1 class="toolbar-text">Event Scheduler</h1>
+  </div>
+
+  <form class="toolbar-flex" [formGroup]="searchForm">
+    <label class="search-label">Search between</label>
+    <kendo-datepicker  class="search-date-dim" placeholder=" " name="start-date" formControlName="startDate" (ngModelChange)="changeListener()"></kendo-datepicker>
+    <label class="dash"> - </label>
+    <kendo-datepicker  class="search-date-dim" placeholder=" " name="end-date" formControlName="endDate" (ngModelChange)="changeListener()"></kendo-datepicker>
+    <button class="search-clear" (click)="clearSearchForm()"></button>
+  </form>
+</div>
+
+
+<div class="home-container">
+    <div class="event-form">
+        <app-event-form class="event-form" (triggerUpdate)="pageifyEvents()"></app-event-form>
+    </div>
+
+    <div class="event-button-container">
+        <div class="event-container">
+            <div *ngFor="let event of pageContent" class="event-card" data-toggle="modal" data-target="#modal" (click)="setCurrentEvent(event)">
+                <div class="event-name-container">{{event.name}}</div>
+                <br><mat-divider></mat-divider><br>
+                <label for="date-time">Date and Time</label>
+                <div class="event-date-container">{{event.scheduleDate}}</div>
+                <div class="event-time-container">{{formatTime(event.startTime)}} - {{formatTime(event.endTime)}}</div>
+                <br><mat-divider></mat-divider><br>
+                <label for="event-description-container">Description</label>
+                <div class="event-description-container">{{event.description}}</div>
+                <br><div class="click-for-info">Click for full info</div>
+            </div>
+        </div>
+
+        <div class="buttons-container">
+            <button (click)="prevPage()" [disabled]="isPrevDisabled()" class="arrow-button left">◄</button>
+            <div class="page-number-container">{{currentPage}}</div>
+            <button (click)="nextPage()" [disabled]="isNextDisabled()" class="arrow-button right">►</button>
+        </div>
+
+        <div class="modal fade" id="modal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content modal-dark">
+                <div class="modal-body">
+                  <form class="modal-form" [formGroup]="modalForm">
+                    <input type="hidden" name="modal-id" id="modal-id" formControlName="id" required>
+                    <label class="warn" [ngClass]="{'disabled-text': !isMaxLengthError('name')}">The event name mustn't exceed 30 characters</label>
+                    <input type="text" name="modal-name" id="modal-name" class="modal-name-style"  placeholder="Event name" autocomplete="off" formControlName="name" required>
+                    <mat-divider class="modal-divider"></mat-divider>
+                    <kendo-datepicker  class="date-dim" placeholder=" " name="modal-date" formControlName="scheduleDate"  required></kendo-datepicker>
+                    <kendo-timepicker  class="time-dim" placeholder=" " name="modal-startTime" formControlName="startTime"  required></kendo-timepicker>
+                    <label class="dash"> - </label>
+                    <kendo-timepicker  class="time-dim" placeholder=" " name="modal-endTime" formControlName="endTime" ></kendo-timepicker><br>
+                    <mat-divider class="modal-divider"></mat-divider>
+                    <label class="modal-label" for="modal-description">Description</label><br>
+                    <label class="warn" [ngClass]="{'disabled-text': !isMaxLengthError('description')}">The event name mustn't exceed 255 characters</label>
+                    <textarea name="modal-description" id="modal-description" class="modal-description-style" formControlName="description" ></textarea>
+                  </form>
+                  <div class="modal-button-container">
+                    <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal" (click)="setEditFalse()">Close</button>
+                    <button type="button" class="btn btn-primary edit-button" (click)="setEditTrue()" [ngClass]="{'disabled': editMode}">Edit</button>
+                    <button type="button" class="btn btn-primary save-button" [ngClass]="{'disabled': !editMode || modalForm.invalid}" (click)="updateEvent()">Save</button>
+                    <button type="button" class="btn btn-primary delete-button" [ngClass]="{'disabled': editMode}" (click)="deleteEvent(currentEvent.id)">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+

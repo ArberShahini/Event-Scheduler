@@ -1,0 +1,16 @@
+<form [formGroup]="myForm">
+    <label for="name" class="big-text">Event name</label><br>
+    <label class="warn" [ngClass]="{'disabled': !isMaxLengthError('name')}">The event name mustn't exceed 30 characters</label>
+    <input type="text"  name="name" id="name" class="textfield name " formControlName="name" required><br>
+    <label for="date" class="big-text">Choose date </label><br>
+    <kendo-datepicker  class="date-dim " placeholder="month/day/year" name="date" formControlName="scheduleDate" required></kendo-datepicker><br>
+    <label for="time" class="big-text">Choose time </label><br>
+    <kendo-timepicker  class="time-dim " placeholder="hh:mm AM/PM" name="startTime" formControlName="startTime" required></kendo-timepicker>
+    <label class="dash"> - </label>
+    <kendo-timepicker  class="time-dim " placeholder="hh:mm AM/PM" name="endTime" formControlName="endTime" required></kendo-timepicker><br>
+    <label class="big-text" for="description">Description </label><br>
+    <label class="warn" [ngClass]="{'disabled': !isMaxLengthError('description')}">The description mustn't exceed 255 characters</label>
+    <textarea  name="description" id="description" class="description textfield " formControlName="description" required></textarea><br>
+    <button [disabled]="myForm.invalid" type="submit" name="submitButton" (click)="addEvent()">Add event</button>
+    <button type="submit" name="clearButton" (click)="clearForm()">Clear</button>
+</form>
